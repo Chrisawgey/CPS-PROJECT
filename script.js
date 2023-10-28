@@ -141,31 +141,5 @@ function cleanMemoryAndCloseTab() {
     window.close();
 }
 
-// Add an event listener to the "Run Graph" button
-document.getElementById('run-graph').addEventListener('click', function () {
-    // Get the selected data choice
-    const dataChoice = document.querySelector('input[name="data-choice"]:checked');
 
-    if (dataChoice) {
-        const selectedValue = dataChoice.value;
-        if (selectedValue === 'State') {
-            // Generate a pie chart for the "State" choice
-            generatePieChart();
-        } else {
-            // Generate a bar or line chart for "Total Deaths" or "Total Cases"
-            generateBarOrLineChart(selectedValue);
-        }
-    }
-});
 
-// Function to generate a pie chart
-function generatePieChart() {
-    // Implement the logic to generate a pie chart
-    // You can use the Google Charts library or other chart libraries
-}
-
-// Function to generate a bar or line chart
-function generateBarOrLineChart(dataType) {
-    // Implement the logic to generate a bar or line chart based on the selected data type
-    // You can use the Google Charts library or other chart libraries
-}
