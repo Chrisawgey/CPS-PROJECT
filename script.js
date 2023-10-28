@@ -12,6 +12,24 @@ function clearChart() {
     isChartDisplayed = false; // Mark the chart as cleared
 }
 
+// Function to clear the error message
+function clearErrorMessage() {
+    const messageArea = document.getElementById('message-area');
+    messageArea.textContent = '';
+}
+
+// Function to display an error message
+function displayErrorMessage(message) {
+    const messageArea = document.getElementById('message-area');
+    messageArea.textContent = message;
+}
+
+// Function to hide error messages
+function hideErrorMessages() {
+    document.getElementById('graph-display').textContent = '';
+    clearErrorMessage();
+}
+
 // Add an event listener to the "Load CSV file" link
 document.getElementById('load-csv').addEventListener('click', function () {
     // Trigger the hidden file input element
@@ -31,7 +49,7 @@ document.getElementById('file-input').addEventListener('change', function (event
                 }
 
                 // Clear any previous error messages
-                clearErrorMessage();
+                hideErrorMessages();
             }
 
             // Read the selected file as text
@@ -52,16 +70,6 @@ document.getElementById('file-input').addEventListener('change', function (event
         }
     }
 });
-
-function displayErrorMessage(message) {
-    const messageArea = document.getElementById('message-area');
-    messageArea.textContent = message;
-}
-
-function clearErrorMessage() {
-    const messageArea = document.getElementById('message-area');
-    messageArea.textContent = "";
-}
 
 function displayCSVData(csvData) {
     // Split the CSV data into rows
@@ -118,6 +126,8 @@ function clearTableAndGraph() {
     document.getElementById('message-area').textContent = '';
     // Clear the error message
     clearErrorMessage();
+    // Hide the "Not Applicable" message
+    document.getElementById('graph-display').textContent = '';
 }
 
 // Add an event listener to the "Exit" menu item
@@ -135,11 +145,6 @@ function cleanMemoryAndCloseTab() {
 
 // Function to display the chart based on the selected type
 function displayChart(chartType) {
-    if (!isCSVLoaded) {
-        displayErrorMessage("Please load data first.");
-        return;
-    }
-
     // Map the selected chartType to the corresponding data choice
     let dataChoice;
     switch (chartType) {
@@ -167,25 +172,38 @@ function displayChart(chartType) {
         // You can add the logic to display the Pie chart here
         // Example: displayPieChart();
     } else {
-        displayErrorMessage("Not Applicable");
+        // Display "Not Applicable" message in the "graph-display" div
+        document.getElementById('graph-display').textContent = "Not Applicable";
     }
 
     // Display the number of records in the message area
     document.getElementById('message-area').textContent = `Number of Records: ${data.length}`;
 }
 
+// Wrap the code for adding event listeners in a function
+function addEventListenersToViewSubMenuItems() {
+    // Select the "View" sub-menu items by class
+    const viewSubMenuItems = document.querySelectorAll('.menu li:has(ul) li a');
 
+    // Add event listeners to the "View" sub-menu items
+    viewSubMenuItems.forEach(item => {
+        item.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent the default link behavior
+            const chartType = event.target.textContent.toLowerCase(); // Get the selected chart type
 
-
-
-// Select the "View" sub-menu items by class
-const viewSubMenuItems = document.querySelectorAll('.menu li:has(ul) li a');
-
-// Add event listeners to the "View" sub-menu items
-viewSubMenuItems.forEach(item => {
-    item.addEventListener('click', function (event) {
-        event.preventDefault(); // Prevent the default link behavior
-        const chartType = event.target.textContent.toLowerCase(); // Get the selected chart type
-        displayChart(chartType);
+            if (isCSVLoaded) {
+                // Data is loaded, proceed with displaying the chart
+                displayChart(chartType);
+            }
+        });
     });
+}
+
+// Add an event listener to ensure the page is fully loaded before adding event listeners
+document.addEventListener('DOMContentLoaded', function () {
+    addEventListenersToViewSubMenuItems();
+    hideErrorMessages(); // Hide error messages on page load
 });
+
+// Disable "Not Applicable" and "Please load data first" on initial page load
+hideErrorMessages();
