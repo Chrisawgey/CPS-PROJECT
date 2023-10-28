@@ -53,19 +53,21 @@
         <section class="data-selection">
             <p>Please select one of the following choices, and then run one of the graphs in the View menu. Note: The empty, NULL, or NaN values will be excluded.</p>
     
-            <label for="avgWages">AvgWages (Bar, Line):</label>
+            <label for="avgWages">TotalDeaths (Bar, Line):</label>
             <input type="radio" id="avgWages" name="chartType" value="avgWages">
     
-            <label for="estimatedPopulation">EstimatedPopulation (Bar, Line):</label>
+            <label for="estimatedPopulation">TotalCases (Bar, Line):</label>
             <input type="radio" id="estimatedPopulation" name="chartType" value="estimatedPopulation">
     
             <label for="state">State (Bar, Pie):</label>
             <input type="radio" id="state" name="chartType" value="state">
         </section>
         
-        <section class="graph-display">
-        
+        <section class="graph-display" id="graph-display">
+            <!-- Adding a new div for the "Not Applicable" message -->
+            <div id="not-applicable-message" style="display: none;">Not Applicable</div>
         </section>
+        
 
         <section class="message-area">
             <div id="message-area"></div>

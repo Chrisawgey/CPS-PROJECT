@@ -12,7 +12,6 @@ function clearChart() {
     isChartDisplayed = false; // Mark the chart as cleared
 }
 
-
 // Add an event listener to the "Load CSV file" link
 document.getElementById('load-csv').addEventListener('click', function () {
     // Trigger the hidden file input element
@@ -107,13 +106,6 @@ function displayCSVData(csvData) {
     // Clear the error message
     clearErrorMessage();
 
-    // Function to clear the chart
-function clearChart() {
-    const googleTable = document.querySelector('.google-table');
-    googleTable.innerHTML = ''; // Remove the chart
-    isChartDisplayed = false; // Mark the chart as cleared
-}
-
     // Display the number of records in the message area
     document.getElementById('message-area').textContent = `Number of Records: ${data.length}`;
 }
@@ -141,5 +133,59 @@ function cleanMemoryAndCloseTab() {
     window.close();
 }
 
+// Function to display the chart based on the selected type
+function displayChart(chartType) {
+    if (!isCSVLoaded) {
+        displayErrorMessage("Please load data first.");
+        return;
+    }
+
+    // Map the selected chartType to the corresponding data choice
+    let dataChoice;
+    switch (chartType) {
+        case "bar":
+        case "line":
+            dataChoice = "TotalDeaths"; // Use "TotalDeaths" for AvgWage
+            break;
+        case "pie":
+            dataChoice = "TotalCases"; // Use "TotalCases" for EstimatedPopulation
+            break;
+        default:
+            // Display "Not Applicable" message in the "graph-display" div
+            document.getElementById('graph-display').textContent = "Not Applicable";
+            return;
+    }
+
+    // Hide the "Not Applicable" message in the "graph-display" div
+    document.getElementById('graph-display').textContent = '';
+
+    // Check if the selected chart type is valid for the data choice
+    if (dataChoice === "TotalDeaths" && (chartType === "bar" || chartType === "line")) {
+        // You can add the logic to display the Bar or Line chart here
+        // Example: displayBarOrLineChart();
+    } else if (dataChoice === "TotalCases" && chartType === "pie") {
+        // You can add the logic to display the Pie chart here
+        // Example: displayPieChart();
+    } else {
+        displayErrorMessage("Not Applicable");
+    }
+
+    // Display the number of records in the message area
+    document.getElementById('message-area').textContent = `Number of Records: ${data.length}`;
+}
 
 
+
+
+
+// Select the "View" sub-menu items by class
+const viewSubMenuItems = document.querySelectorAll('.menu li:has(ul) li a');
+
+// Add event listeners to the "View" sub-menu items
+viewSubMenuItems.forEach(item => {
+    item.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent the default link behavior
+        const chartType = event.target.textContent.toLowerCase(); // Get the selected chart type
+        displayChart(chartType);
+    });
+});

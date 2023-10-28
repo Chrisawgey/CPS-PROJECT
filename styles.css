@@ -1,5 +1,7 @@
 body {
     font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 header {
@@ -12,6 +14,7 @@ header {
 .menu {
     list-style: none;
     padding: 0;
+    text-align: center;
 }
 
 .menu li {
@@ -40,15 +43,11 @@ section {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-.menu {
-    text-align: center; /* Center the menu */
-}
-
 .menu ul {
     list-style: none;
     padding: 0;
-    display: inline-flex; /* Change to inline-flex to make the menu horizontal and centered */
-    justify-content: center; /* Center the items within the menu */
+    display: inline-flex;
+    justify-content: center;
 }
 
 .menu li {
@@ -91,9 +90,24 @@ section {
 /* Adjust sub-menu positioning */
 .menu li ul ul {
     left: 0;
-    top: 100%;
+    top: 0;
 }
+
 #error-message {
-    color: red; /* You can choose your desired text color */
-    display: block; /* Make sure it's visible */
+    color: red;
+    display: block;
+    margin-top: 10px; /* Add spacing between error message and content */
+}
+.data-selection {
+    padding: 20px;
+}
+
+.data-selection label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.data-selection input[type="radio"] {
+    margin-right: 10px;
 }
