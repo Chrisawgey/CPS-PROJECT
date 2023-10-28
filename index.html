@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Web Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="menu">
+            <ul>
+                <li>
+                    <a href="#">File</a>
+                    <ul>
+                        <li>
+                            <a href="#" id="load-csv">Load CSV file</a>
+                            <input type="file" id="file-input" style="display: none;">
+                        </li>
+                        <li><a href="#">Login to DB</a></li>
+                        <li><a href="#">Logout DB</a></li>
+                        <li><a href="#" id="exit">Exit</a></li>
+
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">View</a>
+                    <ul>
+                        <li><a href="#">Line</a></li>
+                        <li><a href="#">Pie</a></li>
+                        <li><a href="#">Bar</a></li>
+                        <li><a href="#">Map</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Setting</a>
+                    <ul>
+                        <li><a href="#">User Info</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Help</a>
+                    <ul>
+                        <li><a href="#">Info</a></li>
+                        <li><a href="#">Client</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="data-selection">
+            <p>Please select one of the following choices, and then run one of the graphs in the View area. Note: The empty, NULL, or NaN values will be excluded.</p>
+            <input type="radio" name="data-choice" id="avg-wages" value="TotalDeaths">
+            <label for="avg-wages">Total Deaths (Bar, Line)</label><br>
+            <input type="radio" name="data-choice" id="estimated-population" value="TotalCases">
+            <label for="estimated-population">Total Cases (Bar, Line)</label><br>
+            <input type="radio" name="data-choice" id="state" value="State">
+            <label for="state">State (Bar, Pie)</label><br>
+            <button id="run-graph">Run Graph</button>
+        </section>
+        
+        <section class="graph-display">
+        
+        </section>
+
+        <section class="message-area">
+            <div id="message-area"></div>
+        </section>
+        
+        
+        
+        <section class="google-table">
+            <div class="google-table" id="google-table"></div>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

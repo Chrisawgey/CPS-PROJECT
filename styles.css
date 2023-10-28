@@ -1,0 +1,99 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #fff;
+}
+
+main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+section {
+    flex: 1;
+    padding: 20px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.menu {
+    text-align: center; /* Center the menu */
+}
+
+.menu ul {
+    list-style: none;
+    padding: 0;
+    display: inline-flex; /* Change to inline-flex to make the menu horizontal and centered */
+    justify-content: center; /* Center the items within the menu */
+}
+
+.menu li {
+    position: relative;
+    margin-right: 20px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px 15px;
+    display: block;
+}
+
+.menu a:hover {
+    background-color: #555;
+}
+
+/* Sub-menus */
+.menu li ul {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    top: 100%;
+    left: 0;
+}
+
+.menu li:hover ul {
+    display: block;
+}
+
+.menu li ul li {
+    display: block;
+}
+
+.menu li ul a {
+    padding: 10px 20px;
+}
+
+/* Adjust sub-menu positioning */
+.menu li ul ul {
+    left: 0;
+    top: 100%;
+}
+#error-message {
+    color: red; /* You can choose your desired text color */
+    display: block; /* Make sure it's visible */
+}
