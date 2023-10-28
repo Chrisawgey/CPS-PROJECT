@@ -13,27 +13,23 @@ function clearChart() {
 }
 
 // Function to clear the error message
-function clearErrorMessage() {
-    const messageArea = document.getElementById('message-area');
+function clearErrorMessage(targetElement) {
+    const messageArea = document.getElementById(targetElement);
     messageArea.textContent = '';
 }
 
 // Function to display an error message
-function displayErrorMessage(message) {
-    const messageArea = document.getElementById('message-area');
+function displayErrorMessage(message, targetElement) {
+    const messageArea = document.getElementById(targetElement);
     messageArea.textContent = message;
-}
-
-// Function to hide error messages
-function hideErrorMessages() {
-    document.getElementById('graph-display').textContent = '';
-    clearErrorMessage();
 }
 
 // Add an event listener to the "Load CSV file" link
 document.getElementById('load-csv').addEventListener('click', function () {
     // Trigger the hidden file input element
     document.getElementById('file-input').click();
+    // Clear the error message in the 'graph-display' element
+    clearErrorMessage('graph-display');
 });
 
 // Add an event listener to the file input to handle the selected file
@@ -49,7 +45,7 @@ document.getElementById('file-input').addEventListener('change', function (event
                 }
 
                 // Clear any previous error messages
-                hideErrorMessages();
+                clearErrorMessage('message-area');
             }
 
             // Read the selected file as text
@@ -62,8 +58,8 @@ document.getElementById('file-input').addEventListener('change', function (event
             reader.readAsText(file);
         } else {
             // Display an error and remove the chart
-            displayErrorMessage("The data is in the wrong format. Only CSV files can be loaded.");
-            event.target.value = ""; // Clear the file input
+            displayErrorMessage('The data is in the wrong format. Only CSV files can be loaded.', 'message-area');
+            event.target.value = ''; // Clear the file input
             if (isChartDisplayed) {
                 clearChart();
             }
@@ -86,7 +82,7 @@ function displayCSVData(csvData) {
     const visibleColumns = [];
     headers.forEach((header, index) => {
         // Check if there is at least one non-empty cell in the column
-        const columnHasData = data.some(row => row.split(',')[index].trim() !== "");
+        const columnHasData = data.some(row => row.split(',')[index].trim() !== '');
         if (columnHasData) {
             dataTable.addColumn('string', header);
             visibleColumns.push(index);
@@ -112,22 +108,10 @@ function displayCSVData(csvData) {
     isChartDisplayed = true; // Mark the chart as displayed
 
     // Clear the error message
-    clearErrorMessage();
+    clearErrorMessage('message-area');
 
     // Display the number of records in the message area
     document.getElementById('message-area').textContent = `Number of Records: ${data.length}`;
-}
-
-// Function to clear the table and graph areas
-function clearTableAndGraph() {
-    // Clear the table area
-    document.querySelector('.google-table').innerHTML = '';
-    // Clear the message area
-    document.getElementById('message-area').textContent = '';
-    // Clear the error message
-    clearErrorMessage();
-    // Hide the "Not Applicable" message
-    document.getElementById('graph-display').textContent = '';
 }
 
 // Add an event listener to the "Exit" menu item
@@ -148,39 +132,38 @@ function displayChart(chartType) {
     // Map the selected chartType to the corresponding data choice
     let dataChoice;
     switch (chartType) {
-        case "bar":
-        case "line":
-            dataChoice = "TotalDeaths"; // Use "TotalDeaths" for AvgWage
+        case 'bar':
+        case 'line':
+            dataChoice = 'TotalDeaths'; // Use 'TotalDeaths' for AvgWage
             break;
-        case "pie":
-            dataChoice = "TotalCases"; // Use "TotalCases" for EstimatedPopulation
+        case 'pie':
+            dataChoice = 'TotalCases'; // Use 'TotalCases' for EstimatedPopulation
             break;
         default:
-            // Display "Not Applicable" message in the "graph-display" div
-            document.getElementById('graph-display').textContent = "Not Applicable";
+            // Display "Not Applicable" message in the 'graph-display' div
+            displayErrorMessage('Not Applicable', 'graph-display');
             return;
     }
 
-    // Hide the "Not Applicable" message in the "graph-display" div
-    document.getElementById('graph-display').textContent = '';
+    // Hide the "Not Applicable" message in the 'graph-display' div
+    clearErrorMessage('graph-display');
 
     // Check if the selected chart type is valid for the data choice
-    if (dataChoice === "TotalDeaths" && (chartType === "bar" || chartType === "line")) {
+    if (dataChoice === 'TotalDeaths' && (chartType === 'bar' || chartType === 'line')) {
         // You can add the logic to display the Bar or Line chart here
         // Example: displayBarOrLineChart();
-    } else if (dataChoice === "TotalCases" && chartType === "pie") {
+    } else if (dataChoice === 'TotalCases' && chartType === 'pie') {
         // You can add the logic to display the Pie chart here
         // Example: displayPieChart();
     } else {
-        // Display "Not Applicable" message in the "graph-display" div
-        document.getElementById('graph-display').textContent = "Not Applicable";
+        displayErrorMessage('Not Applicable', 'graph-display');
     }
 
     // Display the number of records in the message area
     document.getElementById('message-area').textContent = `Number of Records: ${data.length}`;
 }
 
-// Wrap the code for adding event listeners in a function
+// Function to add event listeners to the "View" sub-menu items
 function addEventListenersToViewSubMenuItems() {
     // Select the "View" sub-menu items by class
     const viewSubMenuItems = document.querySelectorAll('.menu li:has(ul) li a');
@@ -191,7 +174,10 @@ function addEventListenersToViewSubMenuItems() {
             event.preventDefault(); // Prevent the default link behavior
             const chartType = event.target.textContent.toLowerCase(); // Get the selected chart type
 
-            if (isCSVLoaded) {
+            if (!isCSVLoaded) {
+                // Data is not loaded, show the "Please load data first" message
+                displayErrorMessage('Please load data first', 'graph-display');
+            } else {
                 // Data is loaded, proceed with displaying the chart
                 displayChart(chartType);
             }
@@ -202,8 +188,8 @@ function addEventListenersToViewSubMenuItems() {
 // Add an event listener to ensure the page is fully loaded before adding event listeners
 document.addEventListener('DOMContentLoaded', function () {
     addEventListenersToViewSubMenuItems();
-    hideErrorMessages(); // Hide error messages on page load
 });
 
 // Disable "Not Applicable" and "Please load data first" on initial page load
-hideErrorMessages();
+document.getElementById('graph-display').textContent = '';
+document.getElementById('message-area').textContent = '';
