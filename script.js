@@ -4,7 +4,6 @@ google.charts.load('current', { packages: ['table'] });
 // Variables to track whether a CSV file is loaded and the chart is displayed
 let isCSVLoaded = false;
 let isChartDisplayed = false;
-let viewMenuClicked = false; // Flag for View submenu click
 
 // Function to clear the chart
 function clearChart() {
@@ -25,70 +24,7 @@ function displayErrorMessage(message, targetElement) {
     messageArea.textContent = message;
 }
 
-// Add an event listener to the "Load CSV file" link
-document.getElementById('load-csv').addEventListener('click', function () {
-    if (!isCSVLoaded && !viewMenuClicked) {
-        // Clear the error message in the 'graph-display' element
-        clearErrorMessage('graph-display');
-    }
-    // Trigger the hidden file input element
-    document.getElementById('file-input').click();
-});
-
-// Add an event listener to prevent submenu items under "File" from triggering the message
-const fileSubMenuItems = document.querySelectorAll('.menu > ul > li:has(ul) li a');
-fileSubMenuItems.forEach(item => {
-    item.addEventListener('click', function (event) {
-        event.stopPropagation(); // Prevent the event from bubbling up to the parent <li> and <a>
-    });
-});
-
-// Add an event listener to the submenu items under "View" to trigger the message
-const viewSubMenuItems = document.querySelectorAll('.menu li:has(ul) li a');
-viewSubMenuItems.forEach(item => {
-    item.addEventListener('click', function () {
-        viewMenuClicked = true; // Set the flag when a View submenu item is clicked
-        if (!isCSVLoaded) {
-            clearErrorMessage('graph-display');
-        }
-    });
-});
-
-// Add an event listener to the file input to handle the selected file
-document.getElementById('file-input').addEventListener('change', function (event) {
-    const file = event.target.files[0];
-
-    if (file) {
-        if (file.name.endsWith('.csv')) {
-            if (isCSVLoaded) {
-                // Remove the chart if it's displayed
-                if (isChartDisplayed) {
-                    clearChart();
-                }
-
-                // Clear any previous error messages
-                clearErrorMessage('message-area');
-            }
-
-            // Read the selected file as text
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const csvData = e.target.result;
-                displayCSVData(csvData);
-                isCSVLoaded = true;
-            };
-            reader.readAsText(file);
-        } else {
-            // Display an error and remove the chart
-            displayErrorMessage('The data is in the wrong format. Only CSV files can be loaded.', 'message-area');
-            event.target.value = ''; // Clear the file input
-            if (isChartDisplayed) {
-                clearChart();
-            }
-        }
-    }
-});
-
+// Function to display the CSV data
 function displayCSVData(csvData) {
     // Split the CSV data into rows
     const rows = csvData.split('\n');
@@ -136,18 +72,58 @@ function displayCSVData(csvData) {
     document.getElementById('message-area').textContent = `Number of Records: ${data.length}`;
 }
 
-// Add an event listener to the "Exit" menu item
-document.getElementById('exit').addEventListener('click', function () {
-    cleanMemoryAndCloseTab();
+// Add an event listener to the "Load CSV file" link
+document.getElementById('load-csv').addEventListener('click', function () {
+    if (!isCSVLoaded) {
+        // Clear the error message in the 'graph-display' element
+        clearErrorMessage('graph-display');
+    }
+    // Trigger the hidden file input element
+    document.getElementById('file-input').click();
 });
 
-// Function to perform any necessary memory cleanup and close the current tab or window
-function cleanMemoryAndCloseTab() {
-    // Perform any necessary memory cleanup here
+// Add an event listener to the submenu items under "View" to trigger the message
+const viewSubMenuItems = document.querySelectorAll('.menu li:has(ul) li a');
+viewSubMenuItems.forEach(item => {
+    item.addEventListener('click', function (event) {
+        displayViewErrorMessage();
+    });
+});
 
-    // Close the current browser tab or window
-    window.close();
-}
+// Add an event listener to the file input to handle the selected file
+document.getElementById('file-input').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+
+    if (file) {
+        if (file.name.endsWith('.csv')) {
+            if (isCSVLoaded) {
+                // Remove the chart if it's displayed
+                if (isChartDisplayed) {
+                    clearChart();
+                }
+
+                // Clear any previous error messages
+                clearErrorMessage('message-area');
+            }
+
+            // Read the selected file as text
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const csvData = e.target.result;
+                displayCSVData(csvData);
+                isCSVLoaded = true;
+            };
+            reader.readAsText(file);
+        } else {
+            // Display an error and remove the chart
+            displayErrorMessage('The data is in the wrong format. Only CSV files can be loaded.', 'message-area');
+            event.target.value = ''; // Clear the file input
+            if (isChartDisplayed) {
+                clearChart();
+            }
+        }
+    }
+});
 
 // Function to display the chart based on the selected type
 function displayChart(chartType) {
@@ -193,14 +169,11 @@ function addEventListenersToViewSubMenuItems() {
     // Add event listeners to the "View" sub-menu items
     viewSubMenuItems.forEach(item => {
         item.addEventListener('click', function (event) {
-            event.preventDefault(); // Prevent the default link behavior
             const chartType = event.target.textContent.toLowerCase(); // Get the selected chart type
 
-            if (!isCSVLoaded) {
-                // Data is not loaded, show the "Please load data first" message
-                displayErrorMessage('Please load data first', 'graph-display');
-                event.stopPropagation(); // Prevent further event propagation
-            } else {
+            displayViewErrorMessage(); // Display the error message for "View" submenus
+
+            if (isCSVLoaded) {
                 // Data is loaded, proceed with displaying the chart
                 displayChart(chartType);
             }
@@ -210,8 +183,6 @@ function addEventListenersToViewSubMenuItems() {
 
 // Add an event listener to ensure the page is fully loaded before adding event listeners
 document.addEventListener('DOMContentLoaded', function () {
-    addEventListenersToViewSubMenuItems();
-
     // Clear the error message in 'graph-display' after the DOM is fully loaded
     clearErrorMessage('graph-display');
 });
