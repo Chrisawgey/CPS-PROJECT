@@ -12,16 +12,25 @@ function clearChart() {
     isChartDisplayed = false; // Mark the chart as cleared
 }
 
-// Function to clear the error message
-function clearErrorMessage(targetElement) {
-    const messageArea = document.getElementById(targetElement);
-    messageArea.textContent = '';
+// Function to clear the error message for "View" submenu
+function clearViewErrorMessage() {
+    const messageArea = document.getElementById('graph-display');
+    messageArea.textContent = ''; // Clear the message area
 }
 
-// Function to display an error message
-function displayErrorMessage(message, targetElement) {
-    const messageArea = document.getElementById(targetElement);
-    messageArea.textContent = message;
+// Function to clear the error message for "File" submenu
+function clearFileErrorMessage() {
+    const messageArea = document.getElementById('message-area');
+    messageArea.textContent = ''; // Clear the message area
+}
+
+
+// Function to display an error message for "View" submenu
+function displayViewErrorMessage() {
+    if (!isCSVLoaded) {
+        clearViewErrorMessage(); // Clear any previous error message
+        document.getElementById('graph-display').textContent = 'Please load data first';
+    }
 }
 
 // Function to display the CSV data
@@ -66,7 +75,7 @@ function displayCSVData(csvData) {
     isChartDisplayed = true; // Mark the chart as displayed
 
     // Clear the error message
-    clearErrorMessage('message-area');
+    clearFileErrorMessage();
 
     // Display the number of records in the message area
     document.getElementById('message-area').textContent = `Number of Records: ${data.length}`;
@@ -76,7 +85,7 @@ function displayCSVData(csvData) {
 document.getElementById('load-csv').addEventListener('click', function () {
     if (!isCSVLoaded) {
         // Clear the error message in the 'graph-display' element
-        clearErrorMessage('graph-display');
+        clearViewErrorMessage();
     }
     // Trigger the hidden file input element
     document.getElementById('file-input').click();
@@ -103,7 +112,7 @@ document.getElementById('file-input').addEventListener('change', function (event
                 }
 
                 // Clear any previous error messages
-                clearErrorMessage('message-area');
+                clearFileErrorMessage();
             }
 
             // Read the selected file as text
@@ -116,7 +125,8 @@ document.getElementById('file-input').addEventListener('change', function (event
             reader.readAsText(file);
         } else {
             // Display an error and remove the chart
-            displayErrorMessage('The data is in the wrong format. Only CSV files can be loaded.', 'message-area');
+            clearViewErrorMessage();
+            document.getElementById('message-area').textContent = 'The data is in the wrong format. Only CSV files can be loaded.';
             event.target.value = ''; // Clear the file input
             if (isChartDisplayed) {
                 clearChart();
@@ -129,63 +139,91 @@ document.getElementById('file-input').addEventListener('change', function (event
 function displayChart(chartType) {
     // Map the selected chartType to the corresponding data choice
     let dataChoice;
+
     switch (chartType) {
         case 'bar':
         case 'line':
             dataChoice = 'TotalDeaths'; // Use 'TotalDeaths' for AvgWage
             break;
         case 'pie':
+        case 'map':
             dataChoice = 'TotalCases'; // Use 'TotalCases' for EstimatedPopulation
             break;
         default:
             // Display "Not Applicable" message in the 'graph-display' div
-            displayErrorMessage('Not Applicable', 'graph-display');
+            clearViewErrorMessage(); // Clear any previous error message
+            document.getElementById('graph-display').textContent = 'Not Applicable';
             return;
     }
 
     // Hide the "Not Applicable" message in the 'graph-display' div
-    clearErrorMessage('graph-display');
+    clearViewErrorMessage();
 
     // Check if the selected chart type is valid for the data choice
-    if (dataChoice === 'TotalDeaths' && (chartType === 'bar' || chartType === 'line')) {
-        // You can add the logic to display the Bar or Line chart here
-        // Example: displayBarOrLineChart();
-    } else if (dataChoice === 'TotalCases' && chartType === 'pie') {
-        // You can add the logic to display the Pie chart here
-        // Example: displayPieChart();
+    if ((dataChoice === 'TotalDeaths' || dataChoice === 'TotalCases') && (chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'map')) {
+        // You can add the logic to display the Bar, Line, Pie, or Map chart here
+        // Example: displayBarOrLineOrPieOrMapChart();
     } else {
-        displayErrorMessage('Not Applicable', 'graph-display');
+        clearViewErrorMessage(); // Clear any previous error message
+        document.getElementById('graph-display').textContent = 'Not Applicable';
     }
 
     // Display the number of records in the message area
     document.getElementById('message-area').textContent = `Number of Records: ${data.length}`;
 }
 
-// Function to add event listeners to the "View" sub-menu items
-function addEventListenersToViewSubMenuItems() {
-    // Select the "View" sub-menu items by class
-    const viewSubMenuItems = document.querySelectorAll('.menu li:has(ul) li a');
-
-    // Add event listeners to the "View" sub-menu items
-    viewSubMenuItems.forEach(item => {
-        item.addEventListener('click', function (event) {
-            const chartType = event.target.textContent.toLowerCase(); // Get the selected chart type
-
-            displayViewErrorMessage(); // Display the error message for "View" submenus
-
-            if (isCSVLoaded) {
-                // Data is loaded, proceed with displaying the chart
-                displayChart(chartType);
-            }
-        });
-    });
-}
 
 // Add an event listener to ensure the page is fully loaded before adding event listeners
 document.addEventListener('DOMContentLoaded', function () {
     // Clear the error message in 'graph-display' after the DOM is fully loaded
-    clearErrorMessage('graph-display');
+    clearViewErrorMessage();
 });
 
-// Disable "Not Applicable" and "Please load data first" on initial page load
+// Disable "Please load data first" on initial page load
 document.getElementById('graph-display').textContent = '';
+
+// Function to display information in a popup
+function displayPopup(content) {
+    alert(content); // Display the content in a popup box
+}
+
+// Add an event listener to the "Info" sub-menu under "Help"
+document.querySelector('.menu li:has(ul) li a[href="#Info"]').addEventListener('click', function (event) {
+    // Display your name, class ID, and project due date
+    const infoContent = "Name: [Your Name]\nClass ID: [Your Class ID]\nProject Due Date: [Due Date]";
+    displayPopup(infoContent);
+});
+
+// Add an event listener to the "Client" sub-menu under "Help"
+document.querySelector('.menu li:has(ul) li a[href="#Client"]').addEventListener('click', function (event) {
+    // Gather user's browser and OS information
+    const browserInfo = `Browser: ${navigator.appName} ${navigator.appVersion}\n`;
+    const cookieEnabled = `Cookies Enabled: ${navigator.cookieEnabled ? 'Yes' : 'No'}\n`;
+    const javaEnabled = `Java Enabled: ${navigator.javaEnabled() ? 'Yes' : 'No'}\n`;
+
+    // Combine all information
+    const clientContent = `${browserInfo}${cookieEnabled}${javaEnabled}`;
+    displayPopup(clientContent);
+});
+
+// Function to display user information in a popup
+function displayUserInfo() {
+    // You can replace these placeholders with actual user information
+    const userInfo = {
+        uid: "12345",
+        login: "john_doe",
+        name: "John Doe",
+        gender: "Male"
+    };
+
+    // Construct the user information content
+    const userInfoContent = `User ID: ${userInfo.uid}\nLogin: ${userInfo.login}\nName: ${userInfo.name}\nGender: ${userInfo.gender}`;
+
+    displayPopup(userInfoContent);
+}
+
+// Add an event listener to the "User Info" submenu under "Setting"
+document.querySelector('.menu li:has(ul) li a[href="#UserInfo"]').addEventListener('click', function (event) {
+    displayUserInfo();
+});
+
