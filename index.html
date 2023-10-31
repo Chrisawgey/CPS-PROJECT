@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Web Page</title>
     <link rel="stylesheet" href="styles.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 </head>
 <body>
     <header>
@@ -62,24 +64,24 @@
             <label for="state">State (Bar, Pie):</label>
             <input type="radio" id="state" name="chartType" value="state">
         </section>
-        
+    
         <section class="graph-display" id="graph-display">
-            
-        </section>
-        
+            <div id="bar-chart"></div>
+            <div id="line-chart"></div>
+            <div id="pie-chart"></div>
+            <div id="map-chart"></div>
 
+        </section>
+    
         <section class="message-area">
             <div id="message-area"></div>
         </section>
-        
-        
-        
+    
         <section class="google-table">
             <div class="google-table" id="google-table"></div>
         </section>
     </main>
-
-    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    
     <script src="script.js"></script>
 </body>
 </html>
